@@ -99,6 +99,14 @@ impl EventManager {
     pub fn fetch_events_batch(&mut self) -> Vec<InputEvent> {
         self.fetcher.next().expect("No events found")
     }
+
+    pub fn get_last_event(&self) -> InputEvent {
+        self.fetcher.last_event
+    }
+
+    pub fn write_sync_event(&self, delay: u64) {
+        self.write_event(get_sync_event(delay))
+    }
 }
 
 impl Default for EventManager {
