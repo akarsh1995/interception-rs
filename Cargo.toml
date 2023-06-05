@@ -9,3 +9,8 @@ edition = "2021"
 evdev = { git="https://github.com/emberian/evdev.git", rev="4c2b319" }
 libc = "0.2.144"
 nix = "0.26.2"
+
+[profile.release]
+strip = true  # Automatically strip symbols from the binary.
+opt-level = "z"  # Optimize for size.
+lto = true
