@@ -86,22 +86,24 @@ fn main() {
                             break 'caps_down;
                         } else {
                             evm.write_event(cde.get_hjkl_equivalent());
+                            evm.write_sync_event(20_000);
+                            let mut last_event = cde.get_hjkl_equivalent();
                             loop {
                                 for chjkl in evm.fetch_events_batch() {
                                     if !chjkl.is_key() {
                                         evm.write_event(chjkl);
                                         continue;
                                     };
-                                    if chjkl.is_caps() {
-                                        if chjkl.is_up() {
-                                            if evm.get_last_event().is_repeat() {
-                                                evm.write_sync_event(20_000);
-                                                evm.write_event(evm.get_last_event().get_up_ev())
-                                            }
-                                            break 'caps_down;
+                                    if chjkl.is_caps() && chjkl.is_up() {
+                                        if last_event.is_repeat() {
+                                            evm.write_sync_event(20_000);
+                                            evm.write_event(last_event.get_up_ev())
                                         }
+                                        break 'caps_down;
                                     }
-                                    evm.write_event(chjkl.get_hjkl_equivalent());
+                                    let replace_event = chjkl.get_hjkl_equivalent();
+                                    evm.write_event(replace_event);
+                                    last_event = replace_event;
                                 }
                             }
                         }
